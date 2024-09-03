@@ -1,0 +1,19 @@
+package com.stardata.observ.mapper.pg;
+
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.stardata.observ.model.pg.SoftwareDefine;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author Kyle Liu
+ * @version 1.0
+ * @email kyle.liu.code@gmail.com
+ * @date 2024-02-25 17:02
+ */
+@Repository
+@DS("config")
+public interface SoftwareMapper extends BaseMapper<SoftwareDefine> {
+
+}

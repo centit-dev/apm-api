@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stardata.observ.mapper.ch.LogMapper">
+    <resultMap id="log" type="com.stardata.observ.model.ch.Log">
+        <result property="timestamp" column="Timestamp"/>
+        <result property="traceId" column="TraceId"/>
+        <result property="spanId" column="SpanId"/>
+        <result property="serviceName" column="ServiceName"/>
+        <!-- rename the column so we can look up by ResourceAttributes['xxx'] -->
+        <result property="resourceAttributes" column="ResourceAttributesJson"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+        <result property="scopeAttributes" column="ScopeAttributes"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+        <result property="logAttributes" column="LogAttributes"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+        <result property="severityText" column="SeverityText"/>
+        <result property="severityNumber" column="SeverityNumber"/>
+        <result property="scopeName" column="ScopeName"/>
+        <result property="body" column="Body"/>
+    </resultMap>
+
+    <select id="findLogByTraceIdAndSpanId" resultMap="log">
+        SELECT
+            Timestamp,
+            TraceId,
+            SpanId,
+            ServiceName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(ScopeAttributes) AS ScopeAttributes,
+            toJSONString(LogAttributes) AS LogAttributes,
+            SeverityText,
+            SeverityNumber,
+            ScopeName,
+            Body
+        FROM otel.otel_logs
+        WHERE TraceId = #{traceId}
+          AND SpanId = #{spanId};
+    </select>
+
+    <select id="findLogByTraceId" resultMap="log">
+        SELECT
+            Timestamp,
+            TraceId,
+            SpanId,
+            ServiceName,
+            Body,
+            SeverityText,
+            SeverityNumber,
+            ResourceSchemaUrl,
+            ScopeSchemaUrl,
+            ScopeName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(ScopeAttributes) AS ScopeAttributes,
+            toJSONString(LogAttributes) AS LogAttributes
+        FROM otel.otel_logs
+        WHERE TraceId = #{traceId};
+    </select>
+
+    <select id="countLogsBySpanIds" resultType="com.stardata.observ.model.ch.LogCount">
+        SELECT SpanId, COUNT(1) AS Count
+        FROM otel.otel_logs
+        WHERE TraceId IN
+        <foreach item="traceId" collection="traceIds" open="(" close=")" separator=",">
+            #{traceId}
+        </foreach>
+        AND SpanId IN
+        <foreach item="spanId" collection="spanIds" open="(" close=")" separator=",">
+            #{spanId}
+        </foreach>
+        GROUP BY SpanId
+    </select>
+
+    <select id="countLogByConditionsWithWhereStatement" resultType="int">
+        SELECT COUNT(1)
+        FROM otel.otel_logs
+        WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        <if test="whereStatement != null &amp;&amp; whereStatement.length()>0">
+            AND ${whereStatement}
+        </if>
+    </select>
+
+    <select id="findLogByConditionsWithWhereStatement" resultMap="log">
+        SELECT
+            Timestamp,
+            TraceId,
+            SpanId,
+            ServiceName,
+            Body,
+            SeverityNumber,
+            SeverityText,
+            ScopeName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson
+        FROM otel.otel_logs
+        WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        <if test="whereStatement != null &amp;&amp; whereStatement.length()>0">
+            AND ${whereStatement}
+        </if>
+        <if test="limit != null &amp;&amp; limit > 0">
+            LIMIT ${limit}
+        </if>
+        <if test="offset != null &amp;&amp; offset > 0">
+            OFFSET ${offset}
+        </if>
+    </select>
+</mapper>

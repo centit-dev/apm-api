@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.SpanMapper">
+    <select id="findTimelineSpansByTraceId" resultType="com.stardata.observ.model.ch.TimelineSpanDto">
+        SELECT
+            Timestamp,
+            TraceId,
+            SpanId,
+            ParentSpanId,
+            ServiceName,
+            SpanName,
+            SpanKind,
+            Duration,
+            SpanAttributes['fault.kind'] AS FaultKind,
+            ResourceAttributes['service.platform'] AS Platform,
+            ResourceAttributes['k8s.deployment.name'] AS Cluster
+        FROM otel.otel_spans
+        WHERE TraceId = #{traceId}
+        ORDER BY Timestamp
+        <if test="limit != null">
+            LIMIT ${limit}
+        </if>
+    </select>
+
+    <resultMap id="serviceMapEdge" type="com.stardata.observ.model.ch.ServiceMapEdgeResult">
+        <result property="fromService" column="Client"/>
+        <result property="toService" column="Server"/>
+        <result property="duration" column="CallTime"/>
+        <result property="callCount" column="CallCount"/>
+        <result property="instanceNames" column="InstanceNames"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="businessFaultCount" column="BusinessFaultCount"/>
+        <result property="systemFaultCount" column="SystemFaultCount"/>
+        <result property="clientApplicationType" column="ClientApplicationType"/>
+        <result property="serverApplicationType" column="ServerApplicationType"/>
+        <result property="serverSoftware" column="ServerSoftware"/>
+        <result property="clientApplicationCluster" column="ClientApplicationCluster"/>
+        <result property="serverApplicationCluster" column="ServerApplicationCluster"/>
+        <result property="platformName" column="PlatformName"/>
+    </resultMap>
+
+    <select id="findEdgeSpanByTraceId" resultMap="serviceMapEdge">
+        SELECT
+            client.ServiceName AS Client,
+            server.ServiceName AS Server,
+            COUNT() AS CallCount,
+            countIf(client.SpanAttributes['fault.kind'] == 'SystemFault') AS SystemFaultCount,
+            countIf(client.SpanAttributes['fault.kind'] == 'BusinessFault') AS BusinessFaultCount,
+            sum(client.Duration) AS CallTime,
+            groupUniqArray(client.ResourceAttributes['k8s.pod.name']) AS InstanceNames,
+            any(client.SpanAttributes['application.type']) AS ClientApplicationType,
+            any(client.ResourceAttributes['k8s.deployment.name']) AS ClientApplicationCluster,
+            any(server.SpanAttributes['application.type']) AS ServerApplicationType,
+            any(server.ResourceAttributes['k8s.deployment.name']) AS ServerApplicationCluster,
+            client.SpanAttributes['server.software'] AS ServerSoftware
+        FROM (
+            SELECT *
+            FROM otel_spans
+            WHERE TraceId = #{traceId}
+            AND SpanKind IN ('SPAN_KIND_CLIENT', 'SPAN_KIND_PRODUCER')
+        ) client
+        LEFT JOIN (
+            SELECT *
+            FROM otel_spans
+            WHERE TraceId = #{traceId}
+            AND SpanKind IN ('SPAN_KIND_SERVER', 'SPAN_KIND_CONSUMER')
+        ) server
+        ON client.SpanId = server.ParentSpanId
+        GROUP BY client.ServiceName, server.ServiceName, ServerSoftware
+    </select>
+
+    <resultMap id="span" type="com.stardata.observ.model.ch.Span">
+        <result property="traceId" column="TraceId"/>
+        <result property="spanId" column="SpanId"/>
+        <result property="timestamp" column="Timestamp"/>
+        <result property="duration" column="Duration"/>
+        <result property="spanKind" column="SpanKind"/>
+        <result property="serviceName" column="ServiceName"/>
+        <result property="spanName" column="SpanName"/>
+        <result property="resourceAttributes" column="ResourceAttributesJson"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+        <result property="spanAttributes" column="SpanAttributesJson"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+    </resultMap>
+
+    <select id="findSpanByTraceIdAndSpanId" resultMap="span">
+        SELECT
+            TraceId,
+            SpanId,
+            ParentSpanId,
+            Timestamp,
+            Duration,
+            SpanKind,
+            ServiceName,
+            SpanName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(SpanAttributes) AS SpanAttributesJson
+        FROM otel.otel_spans
+        WHERE TraceId = #{traceId}
+        AND SpanId = #{spanId}
+    </select>
+
+    <select id="findSpanBySnapshotWhereStatement" resultMap="span">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            TraceId,
+            SpanId,
+            ParentSpanId,
+            Timestamp,
+            Duration AS Duration,
+            SpanKind,
+            ServiceName,
+            SpanName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(SpanAttributes) AS SpanAttributesJson
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.fromSpanTable"/>
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+            <if test="whereStatement != null and whereStatement.length() > 0">
+                AND ${whereStatement}
+            </if>
+        </where>
+        LIMIT ${limit}
+        OFFSET ${offset}
+    </select>
+
+    <select id="countSpanBySnapshotWhereStatement" resultType="java.lang.Long">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT count(1)
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.fromSpanTable"/>
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+            <if test="whereStatement != null and whereStatement.length() > 0">
+                AND ${whereStatement}
+            </if>
+        </where>
+    </select>
+
+    <sql id="spanConditions">
+        <if test="fromTime != null and fromTime > 0">
+            AND Timestamp &gt;= toDateTime64('${fromTime}', 3)
+        </if>
+        <if test="toTime != null and toTime > 0">
+            AND Timestamp &lt;= toDateTime64('${toTime}', 3)
+        </if>
+        <if test="minDuration != null and minDuration > 0">
+            AND Duration &gt;= ${minDuration} * 1_000_000
+        </if>
+        <if test="maxDuration != null and maxDuration > 0">
+            AND Duration &lt;= ${maxDuration} * 1_000_000
+        </if>
+        <if test="serviceName != null and serviceName.length() > 0">
+            AND ServiceName = #{serviceName}
+        </if>
+        <if test="spanName != null and spanName.length() > 0">
+            AND SpanName = #{spanName}
+        </if>
+        <foreach collection="resourceConditions" index="key" item="value" separator=" AND " open=" AND ">
+            ResourceAttributes['${key}'] = '${value}'
+        </foreach>
+        <foreach collection="spanConditions" index="key" item="value" separator=" AND " open=" AND ">
+            SpanAttributes['${key}'] = '${value}'
+        </foreach>
+    </sql>
+
+    <select id="findSpans" resultMap="span">
+        SELECT
+            TraceId,
+            SpanId,
+            ParentSpanId,
+            Timestamp,
+            Duration AS Duration,
+            SpanKind,
+            ServiceName,
+            SpanName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(SpanAttributes) AS SpanAttributesJson
+        FROM otel.otel_spans
+        <where>
+            <include refid="spanConditions"/>
+        </where>
+        LIMIT ${limit}
+        OFFSET ${offset}
+    </select>
+
+    <select id="countSpans" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM otel.otel_spans
+        <where>
+            <include refid="spanConditions"/>
+        </where>
+    </select>
+
+    <select id="findSpansForExceptions" resultMap="span">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            TraceId,
+            SpanId,
+            toJSONString(Events.Attributes) AS EventsJson
+        FROM otel_spans
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+            AND TraceId IN
+            <foreach collection="traceIds" item="traceId" separator="," open="(" close=")">
+                #{traceId}
+            </foreach>
+            AND SpanId IN
+            <foreach collection="spanIds" item="spanId" separator="," open="(" close=")">
+                #{spanId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="findServerSoftwaresByServerHostname" resultType="java.lang.String">
+        SELECT DISTINCT SpanAttributes['server.software']
+        FROM otel.otel_spans
+        WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        AND SpanAttributes['server.host'] = #{hostname}
+    </select>
+
+    <select id="getHeatmapDurationRange" resultType="com.stardata.observ.model.ch.HeatmapDurationRange">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            max(Duration) AS maxDuration,
+            min(Duration) AS minDuration
+        FROM otel_spans
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+        </where>
+    </select>
+
+    <resultMap id="heatmapTrend" type="com.stardata.observ.model.ch.HeatmapTrend">
+        <result property="timeUnix" column="TimeUnix"/>
+        <result property="businessDurations" column="BusinessDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+        <result property="systemDurations" column="SystemDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+        <result property="successDurations" column="SuccessDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+    </resultMap>
+
+    <select id="getHeatmapTrend" resultMap="heatmapTrend">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            toJSONString(sumMap(map(
+                intDiv(Duration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                if(SpanAttributes['fault.kind'] = '', 1, 0)
+            ))) AS SuccessDurations,
+            toJSONString(sumMap(map(
+                intDiv(Duration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                if(SpanAttributes['fault.kind'] = 'SystemFault', 1, 0)
+            ))) AS SystemDurations,
+            toJSONString(sumMap(map(
+                intDiv(Duration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                if(SpanAttributes['fault.kind'] = 'BusinessFault', 1, 0)
+            ))) AS BusinessDurations,
+            toStartOfInterval(Timestamp, INTERVAL #{granularityX} second) AS TimeUnix
+        FROM otel_spans
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+        </where>
+        GROUP BY TimeUnix
+        ORDER BY TimeUnix ASC;
+    </select>
+
+    <select id="getSpanMetrics" resultType="com.stardata.observ.model.ch.SpanMetric">
+        SELECT
+            ServiceName,
+            SpanName,
+            count() AS TotalCount,
+            countIf(SpanAttributes['fault.kind'] == '') AS SuccessCount,
+            quantile(0.9)(Duration) AS DurationP90
+        FROM otel_spans
+        <where>
+            <if test="fromTime != null">
+                AND Timestamp >= toDateTime64('${fromTime}', 3)
+            </if>
+            <if test="toTime != null">
+                AND Timestamp &lt;= toDateTime64('${toTime}', 3)
+            </if>
+            <if test="platform != null">
+                AND ResourceAttributes['service.platform'] = #{platform}
+            </if>
+            <if test="cluster != null">
+                AND ResourceAttributes['k8s.deployment.name'] = #{cluster}
+            </if>
+            <if test="instanceName != null">
+                AND ResourceAttributes['k8s.pod.name'] = #{instanceName}
+            </if>
+            <if test="serviceName != null">
+                AND ServiceName = #{serviceName}
+            </if>
+        </where>
+        GROUP BY ServiceName, SpanName
+        ORDER BY ServiceName, SpanName
+    </select>
+
+    <select id="findSpanExceptions" resultType="com.stardata.observ.model.ch.SpanExceptionGroup">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            SpanAttributes['exception.definition.name'] AS ExceptionDefinition,
+            any(Events.Attributes[1]['exception.stacktrace']) AS ExceptionBodySample
+        FROM otel_spans
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+            AND SpanAttributes['exception.type'] != ''
+        </where>
+        GROUP BY ExceptionDefinition
+    </select>
+
+    <resultMap id="traceFaultInstanceGroup" type="com.stardata.observ.model.ch.TraceFaultInstanceGroup">
+        <result property="platformName" column="PlatformName"/>
+        <result property="appCluster" column="AppCluster"/>
+        <result property="instanceName" column="InstanceName"/>
+        <result property="serviceName" column="ServiceName"/>
+        <result property="spanName" column="SpanName"/>
+        <result property="servers" column="Servers"
+                typeHandler="com.stardata.observ.handler.StringMapListTypeHandler"/>
+    </resultMap>
+
+    <select id="groupByAppInstance" resultMap="traceFaultInstanceGroup">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            ResourceAttributes['service.platform'] AS PlatformName,
+            ResourceAttributes['k8s.deployment.name'] AS AppCluster,
+            ResourceAttributes['k8s.pod.name'] AS InstanceName,
+            toJSONString(groupUniqArray(map(
+                'server.host', SpanAttributes['server.host'],
+                'server.software', SpanAttributes['server.software']
+            ))) AS Servers
+        FROM otel_spans
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceIdAndSpanConditions"/>
+        </where>
+        GROUP BY PlatformName, AppCluster, InstanceName
+    </select>
+</mapper>

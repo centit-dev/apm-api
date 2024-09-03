@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.MetricsHistogramMapper">
+    <resultMap id="serviceMapEdge" type="com.stardata.observ.model.ch.ServiceMapEdgeResult">
+        <result property="fromService" column="FromService"/>
+        <result property="toService" column="ToService"/>
+        <result property="duration" column="Duration"/>
+        <result property="callCount" column="CallCount"/>
+        <result property="businessFaultCount" column="BusinessFaultCount"/>
+        <result property="systemFaultCount" column="SystemFaultCount"/>
+        <result property="clientApplicationType" column="ClientApplicationType"/>
+        <result property="serverApplicationType" column="ServerApplicationType"/>
+        <result property="serverSoftware" column="ServerSoftware"/>
+        <result property="clientApplicationCluster" column="ClientApplicationCluster"/>
+        <result property="serverApplicationCluster" column="ServerApplicationCluster"/>
+        <result property="platformName" column="PlatformName"/>
+    </resultMap>
+
+    <select id="getServiceMapEdges" resultMap="serviceMapEdge">
+        SELECT Attributes['client']                                             AS FromService,
+               Attributes['server']                                             AS ToService,
+               max(Count) - min(Count)                                          AS CallCount,
+               (max(Sum) - min(Sum)) * 1_000_000_000                            AS Duration,
+               first_value(Attributes['client_service.platform'])               AS PlatformName,
+               SUM(if(Attributes['server_fault.kind'] = 'BusinessFault', 1, 0)) AS BusinessFaultCount,
+               SUM(if(Attributes['server_fault.kind'] = 'SystemFault', 1, 0))   AS SystemFaultCount,
+               any(Attributes['client_application.type'])                       AS ClientApplicationType,
+               any(Attributes['client_k8s.deployment.name'])                    AS ClientApplicationCluster,
+               any(Attributes['server_application.type'])                       AS ServerApplicationType,
+               any(Attributes['server_k8s.deployment.name'])                    AS ServerApplicationCluster,
+               Attributes['client_server.software']                             AS ServerSoftware
+        FROM otel_metrics_histogram
+        WHERE MetricName = 'traces_service_graph_request_client_seconds'
+          AND TimeUnix >= toDateTime64('${fromTime}', 3)
+          AND TimeUnix &lt;= toDateTime64('${toTime}', 3)
+          AND ToService != 'unknown'
+          AND FromService != 'user'
+        GROUP BY FromService, ToService, ServerSoftware
+    </select>
+</mapper>

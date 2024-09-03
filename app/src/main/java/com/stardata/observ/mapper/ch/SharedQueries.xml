@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.SharedQueries">
+    <sql id="withSnapshots">
+        WITH snapshot AS (
+            SELECT
+                max(StartTime) AS StartTime,
+                min(EndTime) AS EndTime,
+                groupUniqArrayArray(TraceIds) AS TraceIds
+            FROM apm.user_span_snapshot
+            <where>
+                SnapshotId IN
+                <foreach item="id" collection="snapshotQuery.snapshotIds" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                <if test="snapshotQuery.userId != null">
+                    AND UserId = #{snapshotQuery.userId}
+                </if>
+            </where>
+        )
+    </sql>
+
+    <sql id="fromSpanTable">
+        <choose>
+            <when test="snapshotQuery.useAggregation">
+                FROM otel_span_aggregations span
+            </when>
+            <otherwise>
+                FROM otel_spans span
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="findByTraceIdAndSpanConditions">
+        Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+        <if test="snapshotQuery.fromTime != null">
+            AND Timestamp &gt;= toDateTime64('${snapshotQuery.fromTime}', 3)
+        </if>
+        <if test="snapshotQuery.toTime != null">
+            AND Timestamp &lt;= toDateTime64('${snapshotQuery.toTime}', 3)
+        </if>
+        AND TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+        <if test="snapshotQuery.minDuration != null and snapshotQuery.minDuration > 0">
+            AND SelfDuration &gt;= ${snapshotQuery.minDuration} * 1_000_000
+        </if>
+        <if test="snapshotQuery.maxDuration != null and snapshotQuery.maxDuration > 0">
+            AND SelfDuration &lt;= ${snapshotQuery.maxDuration} * 1_000_000
+        </if>
+        <if test="snapshotQuery.snapshotWheres">
+            <foreach item="snapshotWhere" collection="snapshotQuery.snapshotWheres" open=" AND (" separator=" OR " close=")">
+                ${snapshotWhere}
+            </foreach>
+        </if>
+        <if test="!(snapshotQuery.minRootDuration != null and snapshotQuery.querySystemFault and snapshotQuery.queryBusinessFault)">
+            AND (
+                1=0
+                <if test="snapshotQuery.minRootDuration != null">
+                    OR SpanAttributes['fault.kind'] = ''
+                </if>
+                <if test="snapshotQuery.querySystemFault">
+                    OR SpanAttributes['fault.kind'] = 'SystemFault'
+                </if>
+                <if test="snapshotQuery.queryBusinessFault">
+                    OR SpanAttributes['fault.kind'] = 'BusinessFault'
+                </if>
+            )
+        </if>
+    </sql>
+
+    <sql id="findByTraceFaultConditions">
+        Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+        <if test="snapshotQuery.fromTime != null">
+            AND Timestamp &gt;= toDateTime64('${snapshotQuery.fromTime}', 3)
+        </if>
+        <if test="snapshotQuery.toTime != null">
+            AND Timestamp &lt;= toDateTime64('${snapshotQuery.toTime}', 3)
+        </if>
+        AND TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+        <if test="snapshotQuery.minDuration != null and snapshotQuery.minDuration > 0">
+            AND RootDuration &gt;= ${snapshotQuery.minDuration} * 1_000_000
+        </if>
+        <if test="snapshotQuery.maxDuration != null and snapshotQuery.maxDuration > 0">
+            AND RootDuration &lt;= ${snapshotQuery.maxDuration} * 1_000_000
+        </if>
+    </sql>
+
+    <sql id="findByTraceIdInJointTable">
+        span.Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+        AND span.TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+    </sql>
+
+    <sql id="faultConditions">
+        <choose>
+            <when test="snapshotQuery.minRootDuration != null and snapshotQuery.minRootDuration > 0 and snapshotQuery.querySystemFault and snapshotQuery.queryBusinessFault">
+                1=1
+            </when>
+            <otherwise>
+                (
+                    1=0
+                    <if test="snapshotQuery.minRootDuration != null and snapshotQuery.minRootDuration > 0">
+                        OR RootDuration > #{snapshotQuery.minRootDuration} * 1_000_000
+                    </if>
+                    <if test="snapshotQuery.querySystemFault">
+                        OR FaultKind = 'SystemFault'
+                    </if>
+                    <if test="snapshotQuery.queryBusinessFault">
+                        OR FaultKind = 'BusinessFault'
+                    </if>
+                )
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>

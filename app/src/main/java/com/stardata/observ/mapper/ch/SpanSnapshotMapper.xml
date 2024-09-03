@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.SpanSnapshotMapper">
+
+    <select id="getTraceCountBySnapshotIds" resultType="int">
+        SELECT length(TraceIds)
+        FROM apm.user_span_snapshot
+        WHERE SnapshotId Global IN
+        <foreach collection="spanSnapshotIds" index="snapshotId" item="snapshotId" open="(" separator="," close=")">
+            #{snapshotId}
+        </foreach>
+    </select>
+
+    <insert id="createSnapshotByConditionsWithWhereStatement">
+        INSERT INTO apm.user_span_snapshot (
+            SnapshotId, ParentSnapshotId,
+            StartTime, EndTime, Conditions,
+            TraceIds, WhereStatement,
+            UserId, Timestamp
+        )
+        SELECT
+            #{snapshotId},
+            #{parentSnapshotId},
+            toDateTime64('${fromTime}', 3),
+            toDateTime64('${toTime}', 3),
+            #{condition},
+            groupUniqArray(TraceId) AS TraceIds,
+            ${whereStatementValue} AS WhereStatement,
+            #{userId},
+            now64()
+        FROM otel.${tableName}
+        WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        <if test="whereStatement != null and whereStatement.length() > 0">
+            AND ${whereStatement}
+        </if>
+        <if test="statusConditionQueried or successStatusCondition != null or sysFaultStatusCondition != null or bizFaultStatusCondition != null">
+            AND TraceId Global IN (
+                SELECT TraceId
+                FROM otel.otel_trace_faults
+                WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+                <if test="traceFaultWhereStatement != null and traceFaultWhereStatement.length() > 0">
+                    AND ${traceFaultWhereStatement}
+                </if>
+                AND (
+                    1=0
+                    <if test="successStatusCondition != null">
+                        OR (
+                            FaultKind = ''
+                            <if test="successStatusCondition.minDelay != null">
+                                AND RootDuration > ${successStatusCondition.minDelay} * 1_000_000
+                            </if>
+                        )
+                    </if>
+                    <if test="sysFaultStatusCondition != null">
+                        OR (
+                            FaultKind = 'SystemFault'
+                            <foreach collection="sysFaultStatusCondition" item="condition" separator=" OR " open="AND (" close=")">
+                                PlatformName = #{condition.platformName}
+                                AND AppCluster = #{condition.appCluster}
+                                AND RootServiceName = #{condition.serviceName}
+                                AND RootSpanName = #{condition.spanName}
+                            </foreach>
+                        )
+                    </if>
+                    <if test="bizFaultStatusCondition != null">
+                        OR (
+                            FaultKind = 'BusinessFault'
+                            <foreach collection="bizFaultStatusCondition" item="condition" separator=" OR " open="AND (" close=")">
+                                PlatformName = #{condition.platformName}
+                                AND AppCluster = #{condition.appCluster}
+                                AND RootServiceName = #{condition.serviceName}
+                                AND RootSpanName = #{condition.spanName}
+                            </foreach>
+                        )
+                    </if>
+                )
+                <if test="maxDuration != null and maxDuration > 0">
+                    AND RootDuration &lt;= ${maxDuration} * 1_000_000
+                </if>
+                <if test="minDuration != null and minDuration > 0">
+                    AND RootDuration &gt;= ${minDuration} * 1_000_000
+                </if>
+            )
+        </if>
+    </insert>
+</mapper>

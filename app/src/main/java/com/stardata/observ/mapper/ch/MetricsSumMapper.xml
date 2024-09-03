@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.MetricsSumMapper">
+    <resultMap id="instance" type="com.stardata.observ.model.ch.Instance">
+        <result property="name" column="InstanceName"/>
+        <result property="clusterName" column="ClusterName"/>
+        <result property="name" column="InstanceName"/>
+        <result property="serviceNames" column="ServiceNames"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="applicationTypes" column="ApplicationTypes"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="serverSoftwares" column="ServerSoftwares"
+                typeHandler="com.stardata.observ.handler.ServerSoftwareListTypHandler"/>
+    </resultMap>
+
+    <select id="getRecentInstances" resultMap="instance">
+        SELECT
+            ResourceAttributes['k8s.pod.name'] AS InstanceName,
+            any(ResourceAttributes['k8s.deployment.name']) AS ClusterName,
+            groupUniqArray(ServiceName) AS ServiceNames,
+            groupUniqArray(Attributes['application.type']) AS ApplicationTypes,
+            toJSONString(arrayFilter(
+                (x) -> x['type'] != '',
+                groupUniqArray(map('type', Attributes['server.software'], 'host', Attributes['server.host']))
+            )) AS ServerSoftwares
+        FROM otel_metrics_sum
+        WHERE MetricName = 'calls'
+        AND TimeUnix >= toDateTime64('${fromTime}', 3)
+        AND TimeUnix &lt;= toDateTime64('${toTime}', 3)
+        <!-- AND ResourceAttributes['service.platform'] = '${platform}' -->
+        <if test="cluster != null and cluster != ''">
+            AND ResourceAttributes['k8s.deployment.name'] = '${cluster}'
+        </if>
+        GROUP BY InstanceName
+    </select>
+
+    <select id="getValues" resultType="java.lang.Long">
+        SELECT avg(Value)
+        FROM otel_metrics_sum
+        WHERE MetricName = '${metricName}'
+        AND TimeUnix >= toDateTime64('${fromTime}', 3)
+        AND TimeUnix &lt;= toDateTime64('${toTime}', 3)
+        AND ResourceAttributes['service.platform'] = '${platform}'
+        AND ResourceAttributes['k8s.deployment.name'] = '${cluster}'
+        <if test="instanceName != null and instanceName != ''">
+            AND ResourceAttributes['k8s.pod.name'] = '${instanceName}'
+        </if>
+        GROUP BY toStartOfInterval(TimeUnix, INTERVAL ${granularity} second)
+    </select>
+</mapper>

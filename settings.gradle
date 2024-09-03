@@ -1,0 +1,3 @@
+rootProject.name = 'smartobserv-server'
+include 'openapi'
+include 'app'

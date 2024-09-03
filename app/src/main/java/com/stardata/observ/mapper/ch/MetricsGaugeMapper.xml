@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.MetricsGaugeMapper">
+    <select id="getFaultTrend" resultType="com.stardata.observ.model.ch.FaultTrend">
+        SELECT
+            tupleElement(simpleLinearRegression(toUnixTimestamp(TimeUnix), Value), 1) AS Trending,
+            any(ResourceAttributes['service.platform']) AS PlatformName,
+            any(ResourceAttributes['k8s.deployment.name']) AS AppCluster,
+            Attributes['service.name'] AS ServiceName,
+            Attributes['span.name'] AS SpanName,
+            Attributes['fault.kind'] AS FaultKind
+        FROM otel.otel_metrics_gauge
+        WHERE MetricName = 'errorRates'
+        AND TimeUnix BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        GROUP BY (Attributes['service.name'], Attributes['span.name'], Attributes['fault.kind'])
+        HAVING Trending != 0
+    </select>
+
+    <select id="getValues" resultType="java.lang.Long">
+        SELECT avg(Value)
+        FROM otel_metrics_gauge
+        WHERE MetricName = '${metricName}'
+        AND TimeUnix >= toDateTime64('${fromTime}', 3)
+        AND TimeUnix &lt;= toDateTime64('${toTime}', 3)
+        AND ResourceAttributes['service.platform'] = '${platform}'
+        AND ResourceAttributes['k8s.deployment.name'] = '${cluster}'
+        <if test="instanceName != null and instanceName != ''">
+            AND ResourceAttributes['k8s.pod.name'] = '${instanceName}'
+        </if>
+        GROUP BY toStartOfInterval(TimeUnix, INTERVAL ${granularity} second)
+    </select>
+</mapper>

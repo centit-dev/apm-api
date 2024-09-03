@@ -1,0 +1,873 @@
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10,
+      "relation": "eq"
+    },
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "vX9bR4wB-xWE3lVmEEgg",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.433000000Z",
+          "Body": "Initializing Servlet 'dispatcherServlet'",
+          "Resource": {
+            "container": {
+              "id": "920168f99532f2dc46fc9b076821ab674e7344bd32f549e964b93a862ac15a4e",
+              "image": {
+                "name": "beautautumn/starshop-product",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-product-5d79d49c4d-f4wfd"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-product"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-product",
+                "name": "starshop-online-product-5d79d49c4d-f4wfd",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "8f8a012d-b1a1-4b12-9488-4c0e475a5a3d"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /productcontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "product",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "293e655a52177617",
+          "TraceFlags": 1,
+          "TraceId": "8a9f85bdf5ab1067540dd1cbe566a2da"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "vn9bR4wB-xWE3lVmEEgg",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.304000000Z",
+          "Body": "Initializing Servlet 'dispatcherServlet'",
+          "Resource": {
+            "container": {
+              "id": "694e7c7c82fc310c600e940693c84c94f56cad30510fac515928d99b64500fb1",
+              "image": {
+                "name": "beautautumn/starshop-auth",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-auth-bfffcf895-gqlm7"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-auth"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-auth",
+                "name": "starshop-online-auth-bfffcf895-gqlm7",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:02Z",
+                "uid": "27613ae9-a1f9-40a7-a41e-28f9361dbe9b"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /authcontext.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "auth",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "d13249296068ae8b",
+          "TraceFlags": 1,
+          "TraceId": "bb3d280eb8108511febcef42bb27a3de"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "v39bR4wB-xWE3lVmEEgg",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.329000000Z",
+          "Body": "Completed initialization in 17 ms",
+          "Resource": {
+            "container": {
+              "id": "694e7c7c82fc310c600e940693c84c94f56cad30510fac515928d99b64500fb1",
+              "image": {
+                "name": "beautautumn/starshop-auth",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-auth-bfffcf895-gqlm7"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-auth"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-auth",
+                "name": "starshop-online-auth-bfffcf895-gqlm7",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:02Z",
+                "uid": "27613ae9-a1f9-40a7-a41e-28f9361dbe9b"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /authcontext.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "auth",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "d13249296068ae8b",
+          "TraceFlags": 1,
+          "TraceId": "bb3d280eb8108511febcef42bb27a3de"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "wH9bR4wB-xWE3lVmEEgg",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.259000000Z",
+          "Body": "Initializing Servlet 'dispatcherServlet'",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "017dd570a4b6b8a7",
+          "TraceFlags": 1,
+          "TraceId": "85c13dc571a068a411d1fcfffe074a98"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "wX9bR4wB-xWE3lVmEEgg",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.278000000Z",
+          "Body": "Completed initialization in 19 ms",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "017dd570a4b6b8a7",
+          "TraceFlags": 1,
+          "TraceId": "85c13dc571a068a411d1fcfffe074a98"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "wn9bR4wB-xWE3lVmEEjp",
+        "_score": 1,
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:32.452000000Z",
+          "Body": "Completed initialization in 15 ms",
+          "Resource": {
+            "container": {
+              "id": "920168f99532f2dc46fc9b076821ab674e7344bd32f549e964b93a862ac15a4e",
+              "image": {
+                "name": "beautautumn/starshop-product",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-product-5d79d49c4d-f4wfd"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-product"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-product",
+                "name": "starshop-online-product-5d79d49c4d-f4wfd",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "8f8a012d-b1a1-4b12-9488-4c0e475a5a3d"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /productcontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "product",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.springframework.web.servlet.DispatcherServlet",
+            "version": ""
+          },
+          "SeverityNumber": 9,
+          "SeverityText": "INFO",
+          "SpanId": "293e655a52177617",
+          "TraceFlags": 1,
+          "TraceId": "8a9f85bdf5ab1067540dd1cbe566a2da"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "w39bR4wB-xWE3lVmhUgq",
+        "_score": 1,
+        "_ignored": [
+          "Attributes.exception.stacktrace.keyword",
+          "Attributes.exception.message.keyword"
+        ],
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:43.888000000Z",
+          "Attributes": {
+            "exception": {
+              "message": "[500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:43\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]",
+              "stacktrace": "feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:43\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]\n\tat feign.FeignException.serverErrorStatus(FeignException.java:250)\n\tat feign.FeignException.errorStatus(FeignException.java:197)\n\tat feign.FeignException.errorStatus(FeignException.java:185)\n\tat feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)\n\tat feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)\n\tat feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)\n\tat feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)\n\tat feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)\n\tat com.sun.proxy.$Proxy189.ensureUserCustomerInfo(Unknown Source)\n\tat com.stardata.starshop2.ordercontext.command.south.adapter.FillCustomerIdClientSpringCloudAdapter.fillCustomerId(FillCustomerIdClientSpringCloudAdapter.java:38)\n\tat com.stardata.starshop2.ordercontext.command.domain.OrderManagingService.submitOrder(OrderManagingService.java:51)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService.create(OrderAppService.java:35)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$FastClassBySpringCGLIB$$93d6a84f.invoke(<generated>)\n\tat org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)\n\tat org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:388)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$EnhancerBySpringCGLIB$$4b2ed6d6.create(<generated>)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.lambda$create$0(OrderCommandResource.java:47)\n\tat com.stardata.starshop2.sharedcontext.north.Resources.execute(Resources.java:47)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.create(OrderCommandResource.java:47)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:681)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.servlet.v3_1.OpenTelemetryHandlerMappingFilter.doFilter(OpenTelemetryHandlerMappingFilter.java:83)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\n\tat org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:769)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\n\tat java.lang.Thread.run(Thread.java:748)\n",
+              "type": "feign.FeignException$InternalServerError"
+            }
+          },
+          "Body": "Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:43\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]] with root cause",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/].[dispatcherServlet]",
+            "version": ""
+          },
+          "SeverityNumber": 17,
+          "SeverityText": "SEVERE",
+          "SpanId": "cc21bd0c074059b3",
+          "TraceFlags": 1,
+          "TraceId": "ce403b4289e59ec0dff2880d08fc3d94"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "xH9bR4wB-xWE3lVmhUgq",
+        "_score": 1,
+        "_ignored": [
+          "Attributes.exception.stacktrace.keyword",
+          "Attributes.exception.message.keyword"
+        ],
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:47.115000000Z",
+          "Attributes": {
+            "exception": {
+              "message": "[500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:46\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]",
+              "stacktrace": "feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:46\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]\n\tat feign.FeignException.serverErrorStatus(FeignException.java:250)\n\tat feign.FeignException.errorStatus(FeignException.java:197)\n\tat feign.FeignException.errorStatus(FeignException.java:185)\n\tat feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)\n\tat feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)\n\tat feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)\n\tat feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)\n\tat feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)\n\tat com.sun.proxy.$Proxy189.ensureUserCustomerInfo(Unknown Source)\n\tat com.stardata.starshop2.ordercontext.command.south.adapter.FillCustomerIdClientSpringCloudAdapter.fillCustomerId(FillCustomerIdClientSpringCloudAdapter.java:38)\n\tat com.stardata.starshop2.ordercontext.command.domain.OrderManagingService.submitOrder(OrderManagingService.java:51)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService.create(OrderAppService.java:35)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$FastClassBySpringCGLIB$$93d6a84f.invoke(<generated>)\n\tat org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)\n\tat org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:388)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$EnhancerBySpringCGLIB$$4b2ed6d6.create(<generated>)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.lambda$create$0(OrderCommandResource.java:47)\n\tat com.stardata.starshop2.sharedcontext.north.Resources.execute(Resources.java:47)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.create(OrderCommandResource.java:47)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:681)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.servlet.v3_1.OpenTelemetryHandlerMappingFilter.doFilter(OpenTelemetryHandlerMappingFilter.java:83)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\n\tat org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:769)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\n\tat java.lang.Thread.run(Thread.java:748)\n",
+              "type": "feign.FeignException$InternalServerError"
+            }
+          },
+          "Body": "Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:46\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]] with root cause",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/].[dispatcherServlet]",
+            "version": ""
+          },
+          "SeverityNumber": 17,
+          "SeverityText": "SEVERE",
+          "SpanId": "e16aad572c144b9b",
+          "TraceFlags": 1,
+          "TraceId": "99a4a3b20ba74d1bbcb012bd5c71d75d"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "xX9bR4wB-xWE3lVmhUiQ",
+        "_score": 1,
+        "_ignored": [
+          "Attributes.exception.stacktrace.keyword",
+          "Attributes.exception.message.keyword"
+        ],
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:39.999000000Z",
+          "Attributes": {
+            "exception": {
+              "message": "[500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:39\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]",
+              "stacktrace": "feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:39\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]\n\tat feign.FeignException.serverErrorStatus(FeignException.java:250)\n\tat feign.FeignException.errorStatus(FeignException.java:197)\n\tat feign.FeignException.errorStatus(FeignException.java:185)\n\tat feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)\n\tat feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)\n\tat feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)\n\tat feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)\n\tat feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)\n\tat com.sun.proxy.$Proxy189.ensureUserCustomerInfo(Unknown Source)\n\tat com.stardata.starshop2.ordercontext.command.south.adapter.FillCustomerIdClientSpringCloudAdapter.fillCustomerId(FillCustomerIdClientSpringCloudAdapter.java:38)\n\tat com.stardata.starshop2.ordercontext.command.domain.OrderManagingService.submitOrder(OrderManagingService.java:51)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService.create(OrderAppService.java:35)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$FastClassBySpringCGLIB$$93d6a84f.invoke(<generated>)\n\tat org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)\n\tat org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:388)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$EnhancerBySpringCGLIB$$4b2ed6d6.create(<generated>)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.lambda$create$0(OrderCommandResource.java:47)\n\tat com.stardata.starshop2.sharedcontext.north.Resources.execute(Resources.java:47)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.create(OrderCommandResource.java:47)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:681)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.servlet.v3_1.OpenTelemetryHandlerMappingFilter.doFilter(OpenTelemetryHandlerMappingFilter.java:83)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\n\tat org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:769)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\n\tat java.lang.Thread.run(Thread.java:748)\n",
+              "type": "feign.FeignException$InternalServerError"
+            }
+          },
+          "Body": "Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:39\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]] with root cause",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/].[dispatcherServlet]",
+            "version": ""
+          },
+          "SeverityNumber": 17,
+          "SeverityText": "SEVERE",
+          "SpanId": "6d2a549ef3d07c22",
+          "TraceFlags": 1,
+          "TraceId": "4d327077c6e6ced05c6e4b2dd2abb77d"
+        }
+      },
+      {
+        "_index": "otel_logs",
+        "_type": "_doc",
+        "_id": "xn9bR4wB-xWE3lVmhUiQ",
+        "_score": 1,
+        "_ignored": [
+          "Attributes.exception.stacktrace.keyword",
+          "Attributes.exception.message.keyword"
+        ],
+        "_source": {
+          "@timestamp": "2023-12-08T02:56:44.237000000Z",
+          "Attributes": {
+            "exception": {
+              "message": "[500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:44\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]",
+              "stacktrace": "feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:44\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]\n\tat feign.FeignException.serverErrorStatus(FeignException.java:250)\n\tat feign.FeignException.errorStatus(FeignException.java:197)\n\tat feign.FeignException.errorStatus(FeignException.java:185)\n\tat feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)\n\tat feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)\n\tat feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)\n\tat feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)\n\tat feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)\n\tat com.sun.proxy.$Proxy189.ensureUserCustomerInfo(Unknown Source)\n\tat com.stardata.starshop2.ordercontext.command.south.adapter.FillCustomerIdClientSpringCloudAdapter.fillCustomerId(FillCustomerIdClientSpringCloudAdapter.java:38)\n\tat com.stardata.starshop2.ordercontext.command.domain.OrderManagingService.submitOrder(OrderManagingService.java:51)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService.create(OrderAppService.java:35)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$FastClassBySpringCGLIB$$93d6a84f.invoke(<generated>)\n\tat org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)\n\tat org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:388)\n\tat org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)\n\tat com.stardata.starshop2.ordercontext.command.north.local.OrderAppService$$EnhancerBySpringCGLIB$$4b2ed6d6.create(<generated>)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.lambda$create$0(OrderCommandResource.java:47)\n\tat com.stardata.starshop2.sharedcontext.north.Resources.execute(Resources.java:47)\n\tat com.stardata.starshop2.ordercontext.command.north.remote.OrderCommandResource.create(OrderCommandResource.java:47)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\n\tat org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:681)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.servlet.v3_1.OpenTelemetryHandlerMappingFilter.doFilter(OpenTelemetryHandlerMappingFilter.java:83)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\n\tat org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\n\tat org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\n\tat org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\n\tat org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)\n\tat org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\n\tat org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\n\tat org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\n\tat org.apache.catalina.valves.RemoteIpValve.invoke(RemoteIpValve.java:769)\n\tat org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)\n\tat org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)\n\tat org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\n\tat org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)\n\tat org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1787)\n\tat org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\n\tat org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\n\tat org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\n\tat java.lang.Thread.run(Thread.java:748)\n",
+              "type": "feign.FeignException$InternalServerError"
+            }
+          },
+          "Body": "Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$InternalServerError: [500] during [PUT] to [http://customer-biz-services/v2/shops/1/customers/corresponding_to_user] [CustomerBizService#ensureUserCustomerInfo(UserInfoDto,Long)]: [{\"timestamp\":\"2023-12-08 02:56:44\",\"status\":500,\"error\":\"Internal Server Error\",\"path\":\"/v2/shops/1/customers/corresponding_to_user\"}]] with root cause",
+          "Resource": {
+            "container": {
+              "id": "6491603110889e303e4caf4004bf0bf4f3858d628b1df7d81fd3deb568050f3e",
+              "image": {
+                "name": "beautautumn/starshop-order",
+                "tag": "0.0.5"
+              }
+            },
+            "host": {
+              "arch": "amd64",
+              "name": "starshop-online-order-74dcc5dc79-khrg6"
+            },
+            "k8s": {
+              "deployment": {
+                "name": "starshop-online-order"
+              },
+              "namespace": {
+                "name": "starshop-online-dev"
+              },
+              "node": {
+                "name": "10.0.0.8"
+              },
+              "pod": {
+                "cluster": "starshop-online-dev",
+                "instance": "starshop-online-order",
+                "name": "starshop-online-order-74dcc5dc79-khrg6",
+                "platform": "starshop-online",
+                "start_time": "2023-12-06T06:20:03Z",
+                "uid": "7948ec87-e052-40c1-989a-b8c3ca87da62"
+              }
+            },
+            "os": {
+              "description": "Linux 5.4.119-19.0009.28",
+              "type": "linux"
+            },
+            "process": {
+              "command_line": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java -javaagent:/otel-agent.jar -jar /ordercontext-command.jar",
+              "executable": {
+                "path": "/usr/lib/jvm/java-1.8-openjdk/jre/bin/java"
+              },
+              "pid": 1,
+              "runtime": {
+                "description": "IcedTea OpenJDK 64-Bit Server VM 25.212-b04",
+                "name": "OpenJDK Runtime Environment",
+                "version": "1.8.0_212-b04"
+              }
+            },
+            "service": {
+              "name": "order",
+              "namespace": "starshop-online-dev"
+            },
+            "telemetry": {
+              "auto": {
+                "version": "1.29.0-SNAPSHOT"
+              },
+              "sdk": {
+                "language": "java",
+                "name": "opentelemetry",
+                "version": "1.29.0"
+              }
+            }
+          },
+          "Scope": {
+            "name": "org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/].[dispatcherServlet]",
+            "version": ""
+          },
+          "SeverityNumber": 17,
+          "SeverityText": "SEVERE",
+          "SpanId": "8ec3301185bad7be",
+          "TraceFlags": 1,
+          "TraceId": "9133543b5e266a9fb658662df8156dd7"
+        }
+      }
+    ]
+  }
+}

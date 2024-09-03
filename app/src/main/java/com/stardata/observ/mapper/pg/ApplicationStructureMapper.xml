@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stardata.observ.mapper.pg.ApplicationStructureMapper">
+    <select id="listPlatforms" resultType="com.stardata.observ.vo.NameDisplayPair">
+        SELECT app.code as name, COALESCE(qd.display_name, app.code) AS displayName
+        FROM tb_application_structure app
+                 LEFT JOIN tb_query_dictionary qd ON app.code = qd.name
+        WHERE app.level = '1'
+          AND app.valid_date > now()
+    </select>
+    <select id="listAppClusters" resultType="com.stardata.observ.vo.NameDisplayPair">
+        SELECT app.code as name, COALESCE(qd.display_name, app.code) AS displayName
+        FROM tb_application_structure app
+                 LEFT JOIN tb_query_dictionary qd ON app.code = qd.name
+        WHERE app.level = '2'
+          AND app.valid_date > now()
+          AND app.parent_code = #{platform}
+    </select>
+    <insert id="largeInsert" parameterType="java.util.List">
+        INSERT INTO tb_application_structure (code, parent_code, level, valid_date, create_time, update_time)
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (#{item.code}, #{item.parentCode}, #{item.level}, #{item.validDate}, now(), now())
+        </foreach>
+    </insert>
+</mapper>

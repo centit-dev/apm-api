@@ -1,0 +1,78 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      force-response: true
+  tomcat:
+    uri-encoding: utf-8
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+  datasource:
+    dynamic:
+      primary: data
+      strict: false
+      datasource:
+        data:
+          driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+          url: jdbc:clickhouse://localhost:28123/otel?use_time_zone=GMT+8&use_server_time_zone=GMT+8
+          username: default
+          password: password
+        config:
+          driver-class-name: org.postgresql.Driver
+          url: jdbc:postgresql://localhost:25432/postgres?serverTimezone=GMT%2B8&useSSL=false&stringtype=unspecified
+          username: postgres
+          password: password
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    com.stardata.observ.mapper: DEBUG
+    com.stardata.observ.service: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isValid  # 表示逻辑删除字段名
+      logic-delete-value: 0 # 逻辑删除值
+      logic-not-delete-value: 1  # 逻辑未删除值
+      id-type: auto # ID生成策略，有多个可选，具体看官方文档
+  mapper-locations: classpath:**/mapper/**/*.xml
+where-generators:
+  clickhouse:
+    - operator: "="
+      generator: com.stardata.observ.helper.CHEqualWhereGenerator
+    - operator: "!="
+      generator: com.stardata.observ.helper.CHNotEqualWhereGenerator
+    - operator: ">"
+      generator: com.stardata.observ.helper.CHGtWhereGenerator
+    - operator: ">="
+      generator: com.stardata.observ.helper.CHGteWhereGenerator
+    - operator: "<"
+      generator: com.stardata.observ.helper.CHLtWhereGenerator
+    - operator: "<="
+      generator: com.stardata.observ.helper.CHLteWhereGenerator
+    - operator: "startsWith"
+      generator: com.stardata.observ.helper.CHStartWithWhereGenerator
+    - operator: "endsWith"
+      generator: com.stardata.observ.helper.CHEndWithWhereGenerator
+    - operator: "contains"
+      generator: com.stardata.observ.helper.CHContainsWhereGenerator
+    - operator: "notContain"
+      generator: com.stardata.observ.helper.CHNotContainWhereGenerator
+    - operator: "in"
+      generator: com.stardata.observ.helper.CHInWhereGenerator
+    - operator: "notIn"
+      generator: com.stardata.observ.helper.CHNotInWhereGenerator

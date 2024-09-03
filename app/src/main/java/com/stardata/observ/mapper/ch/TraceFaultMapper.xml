@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.TraceFaultMapper">
+    <select id="getFaultTrend" resultType="com.stardata.observ.model.ch.FaultTrendRate">
+        SELECT
+            toStartOfInterval(Timestamp, INTERVAL #{interval} second) AS TimeStep,
+            ResourceAttributes['service.platform'] AS PlatformName,
+            ResourceAttributes['k8s.deployment.name'] AS AppCluster,
+            ServiceName,
+            SpanName,
+            count() AS Calls,
+            countIf(SpanAttributes['fault.kind'] == 'BusinessFault') / Calls AS BusinessFaultRate,
+            countIf(SpanAttributes['fault.kind'] == 'SystemFault') / Calls AS SystemFaultRate
+        FROM otel_trace_faults
+        WHERE Timestamp BETWEEN toDateTime64('${fromTime}', 3) AND toDateTime64('${toTime}', 3)
+        GROUP BY TimeStep, PlatformName, AppCluster, ServiceName, SpanName
+        ORDER BY TimeStep ASC
+    </select>
+
+    <resultMap id="traceFaultInstanceGroup" type="com.stardata.observ.model.ch.TraceFaultInstanceGroup">
+        <result property="platformName" column="PlatformName"/>
+        <result property="appCluster" column="AppCluster"/>
+        <result property="instanceName" column="InstanceName"/>
+        <result property="serviceName" column="ServiceName"/>
+        <result property="spanName" column="SpanName"/>
+        <result property="calls" column="Calls"/>
+        <result property="faultCalls" column="FaultCalls"/>
+        <result property="applicationType" column="ApplicationType"/>
+        <result property="servers" column="Servers"
+                typeHandler="com.stardata.observ.handler.StringMapListTypeHandler"/>
+        <result property="node" column="Node"/>
+    </resultMap>
+
+    <select id="groupByAppInstance" resultMap="traceFaultInstanceGroup">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            ResourceAttributes['service.platform'] AS PlatformName,
+            ResourceAttributes['k8s.deployment.name'] AS AppCluster,
+            ResourceAttributes['k8s.pod.name'] AS InstanceName,
+            ServiceName,
+            SpanName,
+            any(SpanKind) AS SpanKind,
+            count() AS Calls,
+            countIf(
+                <include refid="com.stardata.observ.mapper.ch.SharedQueries.faultConditions"/>
+            ) AS FaultCalls,
+            any(SpanAttributes['application.type']) AS ApplicationType,
+            any(ResourceAttributes['k8s.node.name']) AS Node
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+            AND
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.faultConditions"/>
+        </where>
+        GROUP BY PlatformName, AppCluster, InstanceName, ServiceName, SpanName
+    </select>
+
+    <select id="getTraceFaultTrend" resultType="com.stardata.observ.model.ch.TraceFaultTrend">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            <if test="snapshotQuery.minRootDuration != null">
+                SUM(if(FaultKind = '', 1, 0)) AS SuccessCount,
+            </if>
+            <if test="snapshotQuery.querySystemFault">
+                SUM(if(FaultKind = 'SystemFault', 1, 0)) AS SystemFaultCount,
+            </if>
+            <if test="snapshotQuery.queryBusinessFault">
+                SUM(if(FaultKind = 'BusinessFault', 1, 0)) AS BusinessFaultCount,
+            </if>
+            toStartOfInterval(Timestamp, INTERVAL #{granularity} second) AS TimeUnix
+        FROM otel_trace_faults
+        <where>
+            Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+            AND TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+        </where>
+        GROUP BY TimeUnix
+        ORDER BY TimeUnix ASC;
+    </select>
+
+    <select id="getHeatmapDurationRange" resultType="com.stardata.observ.model.ch.HeatmapDurationRange">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            max(RootDuration) AS maxDuration,
+            min(RootDuration) AS minDuration
+        FROM otel_trace_faults
+        <where>
+            Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+            AND TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+        </where>
+    </select>
+
+    <resultMap id="heatmapTrend" type="com.stardata.observ.model.ch.HeatmapTrend">
+        <result property="timeUnix" column="TimeUnix"/>
+        <result property="businessDurations" column="BusinessDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+        <result property="systemDurations" column="SystemDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+        <result property="successDurations" column="SuccessDurations"
+                typeHandler="com.stardata.observ.handler.LongMapTypeHandler"/>
+    </resultMap>
+
+    <select id="getHeatmapTrend" resultMap="heatmapTrend">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            <if test="snapshotQuery.minRootDuration != null">
+                toJSONString(sumMap(map(
+                    intDiv(RootDuration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                    if(SpanAttributes['fault.kind'] = '', 1, 0)
+                ))) AS SuccessDurations,
+            </if>
+            <if test="snapshotQuery.querySystemFault">
+                toJSONString(sumMap(map(
+                    intDiv(RootDuration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                    if(SpanAttributes['fault.kind'] = 'SystemFault', 1, 0)
+                ))) AS SystemDurations,
+            </if>
+            <if test="snapshotQuery.queryBusinessFault">
+                toJSONString(sumMap(map(
+                    intDiv(RootDuration, #{granularityY} * 1_000_000) * #{granularityY} * 1_000_000,
+                    if(SpanAttributes['fault.kind'] = 'BusinessFault', 1, 0)
+                ))) AS BusinessDurations,
+            </if>
+            toStartOfInterval(Timestamp, INTERVAL #{granularityX} second) AS TimeUnix
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+        </where>
+        GROUP BY TimeUnix
+        ORDER BY TimeUnix ASC;
+    </select>
+
+    <resultMap id="SpanAttributeSum" type="com.stardata.observ.model.ch.SpanAttributeSum">
+        <result property="resourceSum" column="resourceSum"
+                typeHandler="com.stardata.observ.handler.KeyCountMapTypeHandler" />
+        <result property="spanSum" column="spanSum"
+                typeHandler="com.stardata.observ.handler.KeyCountMapTypeHandler" />
+    </resultMap>
+
+    <select id="sumResourceAttributesBySnapshot" resultMap="SpanAttributeSum">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            toJSONString(approx_top_k(#{limit})(
+                arrayJoin(mapKeys(mapApply(
+                    (x, y) -> (concat(x, '=', y), 1),
+                    mapFilter(
+                        (x, y) -> x NOT IN
+                        <foreach item="key" collection="resourceAttributeBlacklist" open="[" close="]," separator=",">
+                            #{key}
+                        </foreach>
+                        ResourceAttributes
+                    )
+                )))
+            )) AS resourceSum
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+        </where>
+    </select>
+
+    <select id="sumSpanAttributesBySnapshot" resultMap="SpanAttributeSum">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            toJSONString(approx_top_k(#{limit})(
+                arrayJoin(mapKeys(mapApply(
+                    (x, y) -> (concat(x, '=', y), 1),
+                    mapFilter(
+                        (x, y) -> x NOT IN
+                        <foreach item="key" collection="spanAttributeBlacklist" open="[" close="]," separator=",">
+                            #{key}
+                        </foreach>
+                        SpanAttributes
+                    )
+                )))
+            )) AS spanSum
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+        </where>
+    </select>
+
+    <resultMap id="traceFault" type="com.stardata.observ.model.ch.TraceFault">
+        <result property="timestamp" column="Timestamp"/>
+        <result property="traceId" column="TraceId"/>
+        <result property="spanId" column="SpanId"/>
+        <result property="rootServiceName" column="RootServiceName"/>
+        <result property="rootSpanName" column="RootSpanName"/>
+        <result property="serviceName" column="ServiceName"/>
+        <result property="spanName" column="SpanName"/>
+        <result property="spanKind" column="SpanKind"/>
+        <result property="faultKind" column="FaultKind"/>
+        <result property="platformName" column="PlatformName"/>
+        <result property="appCluster" column="AppCluster"/>
+        <result property="instanceName" column="InstanceName"/>
+        <result property="duration" column="Duration"/>
+        <result property="gap" column="Gap"/>
+        <result property="selfDuration" column="SelfDuration"/>
+        <result property="resourceAttributes" column="ResourceAttributesJson"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+        <result property="spanAttributes" column="SpanAttributesJson"
+                typeHandler="com.stardata.observ.handler.StringMapTypeHandler"/>
+    </resultMap>
+
+    <select id="getTraceFaults" resultMap="traceFault">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            Timestamp,
+            TraceId,
+            SpanId,
+            RootServiceName,
+            RootSpanName,
+            ServiceName,
+            SpanName,
+            SpanKind,
+            FaultKind,
+            PlatformName,
+            AppCluster,
+            InstanceName,
+            Duration,
+            Gap,
+            SelfDuration,
+            toJSONString(SpanAttributes) AS SpanAttributesJson
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+        </where>
+        <if test="limit != null">
+            LIMIT ${limit}
+        </if>
+        <if test="offset != null">
+            OFFSET ${offset}
+        </if>
+    </select>
+
+    <resultMap id="spanFaultGroup" type="com.stardata.observ.model.ch.SpanFaultGroup">
+        <result property="labels" column="Labels" typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="calls" column="Calls"/>
+        <result property="faultCalls" column="FaultCalls"/>
+        <result property="rootServices" column="RootServices"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="instances" column="Instances"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+    </resultMap>
+
+    <select id="groupBySnapshotIdAndAttributes" resultMap="spanFaultGroup">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+        <if test="groupByAttributes != null and groupByAttributes.size() > 0">
+            toJSONString([
+            <foreach item="item" collection="groupByAttributes" separator=", ">
+                ${item}
+            </foreach>
+            ]) AS Labels,
+        </if>
+        count() AS Calls,
+        countIf(
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.faultConditions"/>
+        ) AS FaultCalls,
+        groupUniqArrayIf(
+            concat('"', RootServiceName, ' ', RootSpanName, '"'),
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.faultConditions"/>
+        ) AS RootServices,
+        groupUniqArrayIf(
+            ResourceAttributes['k8s.pod.name'],
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.faultConditions"/>
+        ) AS Instances
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+            <foreach item="snapshotWhere" collection="snapshotQuery.snapshotWheres" open=" AND (" separator=" OR " close=")">
+                ${snapshotWhere}
+            </foreach>
+        </where>
+        <if test="groupByAttributes != null and groupByAttributes.size() > 0">
+            GROUP BY
+            <foreach item="item" collection="groupByAttributes" separator=", ">
+                ${item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="findSpanBySnapshotWhereStatement" resultMap="traceFault">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            TraceId,
+            SpanId,
+            ParentSpanId,
+            Timestamp,
+            Duration AS Duration,
+            SpanKind,
+            ServiceName,
+            SpanName,
+            toJSONString(ResourceAttributes) AS ResourceAttributesJson,
+            toJSONString(SpanAttributes) AS SpanAttributesJson
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+            <if test="whereStatement != null and whereStatement.length() > 0">
+                AND ${whereStatement}
+            </if>
+        </where>
+        LIMIT ${limit}
+        OFFSET ${offset}
+    </select>
+
+    <select id="countSpanBySnapshotWhereStatement" resultType="java.lang.Long">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT count(1)
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+            <if test="whereStatement != null and whereStatement.length() > 0">
+                AND ${whereStatement}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="durationStatistics" type="com.stardata.observ.model.ch.DurationStatistics">
+        <result column="timeUnix" property="timeUnix"/>
+        <result column="traceDurationPercentiles" property="traceDurationPercentiles"
+                typeHandler="com.stardata.observ.handler.LongListTypeHandler"/>
+        <result column="selfDurationPercentiles" property="selfDurationPercentiles"
+                typeHandler="com.stardata.observ.handler.LongListTypeHandler"/>
+        <result column="gapDurationPercentiles" property="gapDurationPercentiles"
+                typeHandler="com.stardata.observ.handler.LongListTypeHandler"/>
+    </resultMap>
+
+    <select id="calculateDurationStatistics" resultMap="durationStatistics">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            toStartOfInterval(Timestamp, INTERVAL #{granularity} second) AS timeUnix,
+            <foreach item="durationType" collection="durationTypes" separator=",">
+                <if test="durationType == 'TRACE_DURATION'">
+                    quantiles(
+                    <foreach item="quantile" collection="quantiles" separator=",">
+                        #{quantile}
+                    </foreach>
+                    )(RootDuration) AS traceDurationPercentiles
+                </if>
+                <if test="durationType == 'SELF_DURATION'">
+                    quantiles(
+                    <foreach item="quantile" collection="quantiles" separator=",">
+                        #{quantile}
+                    </foreach>
+                    )(SelfDuration) AS selfDurationPercentiles
+                </if>
+                <if test="durationType == 'GAP'">
+                    quantiles(
+                    <foreach item="quantile" collection="quantiles" separator=",">
+                        #{quantile}
+                    </foreach>
+                    )(Gap) AS gapDurationPercentiles
+                </if>
+            </foreach>
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+        </where>
+        GROUP BY timeUnix
+        ORDER BY timeUnix ASC
+    </select>
+
+    <select id="groupExceptionBySnapshotIds" resultType="com.stardata.observ.model.ch.TraceFaultExceptionGroup">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        SELECT
+            if(SpanAttributes['exception.definition.name'] == '', '', SpanAttributes['exception.definition.name']) AS ExceptionDefinition,
+            COUNT() AS Count
+        FROM otel_trace_faults
+        <where>
+            <include refid="com.stardata.observ.mapper.ch.SharedQueries.findByTraceFaultConditions"/>
+            AND SpanAttributes['exception.type'] != ''
+        </where>
+        GROUP BY ExceptionDefinition
+    </select>
+</mapper>

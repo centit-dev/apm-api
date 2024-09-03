@@ -1,0 +1,79 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.16'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'application'
+}
+
+group = 'com.stardata'
+version = '0.48.2'
+description = 'observer server'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+ext['reactor-bom.version'] = '2023.0.3'
+
+dependencies {
+    implementation project(':openapi')
+
+    implementation 'commons-codec:commons-codec'
+    implementation 'com.baomidou:dynamic-datasource-spring-boot-starter:3.5.2'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.5'
+    implementation 'com.clickhouse:clickhouse-jdbc:0.5.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+    implementation 'com.google.code.gson:gson'
+    implementation 'com.google.guava:guava:33.0.0-jre'
+    implementation 'io.kubernetes:client-java:15.0.1'
+    implementation 'io.projectreactor:reactor-core'
+    implementation 'io.opentelemetry:opentelemetry-api:1.35.0'
+    implementation "io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.25.0-alpha"
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.3'
+    implementation 'org.apache.commons:commons-collections4:4.+'
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    runtimeOnly 'org.lz4:lz4-java:1.8.0'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.hamcrest:hamcrest'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['src/main/resources', 'src/main/java'] // 设置资源文件所在目录
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
+}

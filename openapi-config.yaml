@@ -1,0 +1,3 @@
+hideGenerationTimestamp: true
+skipIfSpecIsUnchanged: true
+interfaceOnly: true

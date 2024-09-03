@@ -1,0 +1,14 @@
+{
+  "code": 0,
+  "errorMsg": null,
+  "data": {
+    "content": [
+      {
+        "key": "value"
+      }
+    ],
+    "totalElements": 3,
+    "pageSize": 10,
+    "pageNumber": 1
+  }
+}

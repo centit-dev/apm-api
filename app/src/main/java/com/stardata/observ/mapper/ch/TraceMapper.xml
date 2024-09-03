@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.stardata.observ.mapper.ch.TraceMapper">
+    <resultMap id="trace" type="com.stardata.observ.model.ch.Trace">
+        <result property="timestamp" column="TimeUnix"/>
+        <result property="traceId" column="TraceId"/>
+        <result property="appCluster" column="AppCluster"/>
+        <result property="platforms" column="Platforms"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="sourceIp" column="SourceIp"/>
+        <result property="serviceName" column="ServiceName"/>
+        <result property="spanName" column="SpanName"/>
+        <result property="duration" column="Duration"/>
+        <result property="serviceNames" column="ServiceNames"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="instanceNames" column="InstanceNames"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+        <result property="spanCount" column="SpanCount"/>
+        <result property="faultKinds" column="FaultKinds"
+                typeHandler="com.stardata.observ.handler.StringListTypeHandler"/>
+    </resultMap>
+
+    <sql id="queryTrace">
+        SELECT min(Timestamp) AS TimeUnix,
+            TraceId,
+            groupUniqArrayMerge(100)(Platforms) AS Platforms,
+            anyIfMerge(AppCluster) AS AppCluster,
+            anyIfMerge(SourceIp) AS SourceIp,
+            anyIfMerge(ServiceName) AS ServiceName,
+            anyIfMerge(SpanName) AS SpanName,
+            max(Duration) AS Duration,
+            groupUniqArrayMerge(100)(ServiceNames) AS ServiceNames,
+            groupUniqArrayMerge(100)(InstanceNames) AS InstanceNames,
+            countMerge(SpanCount) AS SpanCount,
+            groupUniqArrayMerge(100)(FaultKinds) AS FaultKinds
+        FROM otel.otel_traces
+    </sql>
+
+    <select id="findByTraceId" resultMap="trace">
+        <include refid="queryTrace"/>
+        WHERE TraceId = '${traceId}'
+        GROUP BY TraceId
+        ORDER BY TimeUnix DESC
+    </select>
+
+    <select id="findTracesBySpanSnapshots" resultMap="trace">
+        <include refid="com.stardata.observ.mapper.ch.SharedQueries.withSnapshots"/>
+        <include refid="queryTrace"/>
+        WHERE Timestamp BETWEEN (SELECT StartTime FROM snapshot) AND (SELECT EndTime FROM snapshot)
+        AND TraceId IN arrayFlatten((SELECT TraceIds FROM snapshot))
+        GROUP BY TraceId
+        ORDER BY TimeUnix DESC
+        <if test="offset!=null and offset >= 0 and limit!=null and limit>=0">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+</mapper>

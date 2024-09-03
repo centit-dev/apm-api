@@ -1,0 +1,5 @@
+spring.datasource.dynamic.datasource:
+  data.url: jdbc:clickhouse://smartobserv-clickhouse:8123/otel
+  config.url: jdbc:postgresql://smartobserv-postgresql:5432/postgres?serverTimezone=GMT%2B8&useSSL=false&stringtype=unspecified
+logging:
+  file.name: smart-ob.log
